@@ -6,99 +6,119 @@
 
 ### 
 
-### ```text
+#### \## Практичне заняття №2 — NestJS + PostgreSQL + Redis
 
-### Docker version 29.2.1, build a5c7197
+#### 
 
-### 
+#### \## Структура репозиторію
 
-### Docker Compose version v5.0.2
+#### ```text
 
-### 
+#### .
 
-### 
+#### ├── src/              # NestJS source code
 
-### Unable to find image 'hello-world:latest' locally
+#### ├── Dockerfile
 
-### latest: Pulling from library/hello-world
+#### ├── docker-compose.yml
 
-### 17eec7bbc9d7: Pull complete
+#### ├── .env.example      # шаблон змінних оточення
 
-### ea52d2000f90: Download complete
-
-### Digest: sha256:ef54e839ef541993b4e87f25e752f7cf4238fa55f017957c2eb44077083d7a6a
-
-### Status: Downloaded newer image for hello-world:latest
-
-### 
-
-### Hello from Docker!
-
-### This message shows that your installation appears to be working correctly.
-
-### 
-
-### To generate this message, Docker took the following steps:
-
-### &nbsp;1. The Docker client contacted the Docker daemon.
-
-### &nbsp;2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
-
-### &nbsp;   (amd64)
-
-### &nbsp;3. The Docker daemon created a new container from that image which runs the
-
-### &nbsp;   executable that produces the output you are currently reading.
-
-### &nbsp;4. The Docker daemon streamed that output to the Docker client, which sent it
-
-### &nbsp;   to your terminal.
-
-### 
-
-### To try something more ambitious, you can run an Ubuntu container with:
-
-### &nbsp;$ docker run -it ubuntu bash
-
-### 
-
-### Share images, automate workflows, and more with a free Docker ID:
-
-### &nbsp;https://hub.docker.com/
-
-### 
-
-### For more examples and ideas, visit:
-
-### &nbsp;https://docs.docker.com/get-started/
-
-### 
-
-### 
-
-### 
-
-### 
-
-### 11.11.0
-
-### 
-
-### 
-
-### 
-
-### v25.8.0
+#### └── README.md
 
 
 
-### ```
+Вправа 2
 
-### Repository structure
 
-### Dockerfile
 
-### docker-compose.yml
+C:\\Users\\36981\\-hlpf-env-setup>docker compose ps
 
-### README.md
+NAME                        IMAGE                COMMAND                  SERVICE    CREATED         STATUS                   PORTS
+
+hlpf-env-setup-postgres-1   postgres:16-alpine   "docker-entrypoint.s…"   postgres   2 minutes ago   Up 2 minutes (healthy)   0.0.0.0:5432->5432/tcp, \[::]:5432->5432/tcp
+
+hlpf-env-setup-redis-1      redis:7-alpine       "docker-entrypoint.s…"   redis      2 minutes ago   Up 2 minutes (healthy)   0.0.0.0:6379->6379/tcp, \[::]:6379->6379/tcp
+
+
+
+
+
+C:\\Users\\36981\\-hlpf-env-setup>docker compose exec postgres psql -U nestuser -d nestdb -c "\\l"
+
+&#x20;                                                     List of databases
+
+&#x20;  Name    |  Owner   | Encoding | Locale Provider |  Collate   |   Ctype    | ICU Locale | ICU Rules |   Access privileges
+
+\-----------+----------+----------+-----------------+------------+------------+------------+-----------+-----------------------
+
+&#x20;nestdb    | nestuser | UTF8     | libc            | en\_US.utf8 | en\_US.utf8 |            |           |
+
+&#x20;postgres  | nestuser | UTF8     | libc            | en\_US.utf8 | en\_US.utf8 |            |           |
+
+&#x20;template0 | nestuser | UTF8     | libc            | en\_US.utf8 | en\_US.utf8 |            |           | =c/nestuser          +
+
+&#x20;          |          |          |                 |            |            |            |           | nestuser=CTc/nestuser
+
+&#x20;template1 | nestuser | UTF8     | libc            | en\_US.utf8 | en\_US.utf8 |            |           | =c/nestuser          +
+
+&#x20;          |          |          |                 |            |            |            |           | nestuser=CTc/nestuser
+
+(4 rows)
+
+
+
+
+
+
+
+C:\\Users\\36981\\-hlpf-env-setup>docker compose exec redis redis-cli ping
+
+PONG
+
+
+
+Вправа 3
+
+
+
+C:\\Users\\36981\\-hlpf-env-setup>curl http://localhost:3000
+
+Hello World!
+
+
+
+Вправа 4
+
+
+
+\[6:13:18 PM] Starting compilation in watch mode...
+
+app-1  |
+
+app-1  | \[6:13:22 PM] Found 0 errors. Watching for file changes.
+
+app-1  |
+
+app-1  | \[Nest] 29  - 04/01/2026, 6:13:23 PM     LOG \[NestFactory] Starting Nest application...
+
+app-1  | \[Nest] 29  - 04/01/2026, 6:13:23 PM     LOG \[InstanceLoader] TypeOrmModule dependencies initialized +63ms
+
+app-1  | \[Nest] 29  - 04/01/2026, 6:13:23 PM     LOG \[InstanceLoader] ConfigHostModule dependencies initialized +0ms
+
+app-1  | \[Nest] 29  - 04/01/2026, 6:13:23 PM     LOG \[InstanceLoader] AppModule dependencies initialized +0ms
+
+app-1  | \[Nest] 29  - 04/01/2026, 6:13:23 PM     LOG \[InstanceLoader] ConfigModule dependencies initialized +0ms
+
+app-1  | \[Nest] 29  - 04/01/2026, 6:13:23 PM     LOG \[InstanceLoader] TypeOrmCoreModule dependencies initialized +139ms
+
+app-1  | \[Nest] 29  - 04/01/2026, 6:13:23 PM     LOG \[RoutesResolver] AppController {/}: +4ms
+
+app-1  | \[Nest] 29  - 04/01/2026, 6:13:23 PM     LOG \[RouterExplorer] Mapped {/, GET} route +2ms
+
+app-1  | \[Nest] 29  - 04/01/2026, 6:13:23 PM     LOG \[NestApplication] Nest application successfully started +2ms
+
+
+
+
 
