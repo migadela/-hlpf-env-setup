@@ -6,119 +6,199 @@
 
 ### 
 
-#### \## Практичне заняття №2 — NestJS + PostgreSQL + Redis
+#### \## Практичне заняття №3 — CRUD REST API для MiniShop
 
-#### 
+#### &#x20;
 
-#### \## Структура репозиторію
+#### \### Структура репозиторію
 
-#### ```text
+#### ```
 
 #### .
 
-#### ├── src/              # NestJS source code
+#### ├── src/
+
+#### │   ├── categories/
+
+#### │   │   ├── category.entity.ts
+
+#### │   │   ├── categories.module.ts
+
+#### │   │   ├── categories.service.ts
+
+#### │   │   └── categories.controller.ts
+
+#### │   ├── products/
+
+#### │   │   ├── product.entity.ts
+
+#### │   │   ├── products.module.ts
+
+#### │   │   ├── products.service.ts
+
+#### │   │   └── products.controller.ts
+
+#### │   ├── migrations/
+
+#### │   │   ├── 1700000001-CreateTables.ts
+
+#### │   │   └── 1775672009619-AddIsActiveToProducts.ts
+
+#### │   ├── data-source.ts
+
+#### │   └── app.module.ts
 
 #### ├── Dockerfile
 
 #### ├── docker-compose.yml
 
-#### ├── .env.example      # шаблон змінних оточення
-
 #### └── README.md
 
+#### ```
+
+#### &#x20;
+
+#### \### Запуск проекту
+
+#### ```bash
+
+#### cp .env.example .env
+
+#### docker compose up --build
+
+#### ```
+
+#### &#x20;
+
+#### \### API Endpoints
+
+#### | Method | URL | Опис |
+
+#### |--------|-----|------|
+
+#### | GET | /api/categories | Список категорій |
+
+#### | GET | /api/categories/:id | Одна категорія |
+
+#### | POST | /api/categories | Створити категорію |
+
+#### | PATCH | /api/categories/:id | Оновити категорію |
+
+#### | DELETE | /api/categories/:id | Видалити категорію |
+
+#### | GET | /api/products | Список продуктів |
+
+#### | GET | /api/products/:id | Один продукт |
+
+#### | POST | /api/products | Створити продукт |
+
+#### | PATCH | /api/products/:id | Оновити продукт |
+
+#### | DELETE | /api/products/:id | Видалити продукт |
+
+#### &#x20;
+
+#### \### Перевірка міграцій
+
+#### ```
+
+#### C:\\Users\\36981\\-hlpf-env-setup>docker compose exec postgres psql -U nestuser -d nestdb -c "\\dt"
+
+#### &#x20;          List of relations
+
+#### &#x20;Schema |    Name    | Type  |  Owner
+
+#### \--------+------------+-------+----------
+
+#### &#x20;public | categories | table | nestuser
+
+#### &#x20;public | migrations | table | nestuser
+
+#### &#x20;public | products   | table | nestuser
+
+#### (3 rows)
+
+#### ```
+
+#### \### Перевірка стурктури таблиці Products
+
+#### ```
+
+#### C:\\Users\\36981\\-hlpf-env-setup>docker compose exec postgres psql -U nestuser -d nestdb -c "SELECT column\_name, data\_type, column\_default FROM information\_schema.columns WHERE table\_name = 'products';"
+
+#### &#x20;column\_name |          data\_type          |            column\_default
+
+#### \-------------+-----------------------------+--------------------------------------
+
+#### &#x20;id          | integer                     | nextval('products\_id\_seq'::regclass)
+
+#### &#x20;name        | character varying           |
+
+#### &#x20;description | text                        |
+
+#### &#x20;price       | numeric                     |
+
+#### &#x20;stock       | integer                     | 0
+
+#### &#x20;category\_id | integer                     |
+
+#### &#x20;createdAt   | timestamp without time zone | now()
+
+#### &#x20;updatedAt   | timestamp without time zone | now()
+
+#### &#x20;isActive    | boolean                     | true
+
+#### (9 rows)
+
+#### ```
 
 
-Вправа 2
 
+#### &#x20;
 
+#### \### Тест створення категорії
 
-C:\\Users\\36981\\-hlpf-env-setup>docker compose ps
+#### ```curl -X POST http://localhost:3000/api/categories -H "Content-Type: application/json" -d "{\\"name\\": \\"Electronics\\", \\"description\\": \\"Gadgets and devices\\"}"
 
-NAME                        IMAGE                COMMAND                  SERVICE    CREATED         STATUS                   PORTS
+#### Вивід
 
-hlpf-env-setup-postgres-1   postgres:16-alpine   "docker-entrypoint.s…"   postgres   2 minutes ago   Up 2 minutes (healthy)   0.0.0.0:5432->5432/tcp, \[::]:5432->5432/tcp
+#### {"id":1,"name":"Electronics","description":"Gadgets and devices","createdAt":"2026-04-08T18:42:26.535Z"}
 
-hlpf-env-setup-redis-1      redis:7-alpine       "docker-entrypoint.s…"   redis      2 minutes ago   Up 2 minutes (healthy)   0.0.0.0:6379->6379/tcp, \[::]:6379->6379/tcp
+#### ```
 
+#### &#x20;
 
+#### \### Тест створення продукту
 
+#### ```curl -X POST http://localhost:3000/api/products -H "Content-Type: application/json" -d "{\\"name\\": \\"iPhone 15\\", \\"price\\": 999.99, \\"stock\\": 50, \\"categoryId\\": 1}"
 
+Вивід
 
-C:\\Users\\36981\\-hlpf-env-setup>docker compose exec postgres psql -U nestuser -d nestdb -c "\\l"
+#### {"id":1,"name":"iPhone 15","description":null,"price":999.99,"stock":50,"isActive":true,"category":{"id":1},"createdAt":"2026-04-08T18:43:02.109Z","updatedAt":"2026-04-08T18:43:02.109Z"}
 
-&#x20;                                                     List of databases
+#### ```
 
-&#x20;  Name    |  Owner   | Encoding | Locale Provider |  Collate   |   Ctype    | ICU Locale | ICU Rules |   Access privileges
+#### &#x20;
 
-\-----------+----------+----------+-----------------+------------+------------+------------+-----------+-----------------------
+#### \### Тест отримання продуктів
 
-&#x20;nestdb    | nestuser | UTF8     | libc            | en\_US.utf8 | en\_US.utf8 |            |           |
+#### ```curl -X POST http://localhost:3000/api/products
 
-&#x20;postgres  | nestuser | UTF8     | libc            | en\_US.utf8 | en\_US.utf8 |            |           |
+Вивід
 
-&#x20;template0 | nestuser | UTF8     | libc            | en\_US.utf8 | en\_US.utf8 |            |           | =c/nestuser          +
+#### \[{"id":1,"name":"iPhone 15","description":null,"price":"899.99","stock":45,"isActive":true,"category":{"id":1,"name":"Electronics","description":"Gadgets and devices","createdAt":"2026-04-08T18:42:26.535Z"},"createdAt":"2026-04-08T18:43:02.109Z","updatedAt":"2026-04-08T18:47:18.933Z"}]
 
-&#x20;          |          |          |                 |            |            |            |           | nestuser=CTc/nestuser
+#### ```
 
-&#x20;template1 | nestuser | UTF8     | libc            | en\_US.utf8 | en\_US.utf8 |            |           | =c/nestuser          +
+#### &#x20;
 
-&#x20;          |          |          |                 |            |            |            |           | nestuser=CTc/nestuser
+#### \### Тест 404
 
-(4 rows)
+#### ```http://localhost:3000/api/products/999
 
+Вивід
 
-
-
-
-
-
-C:\\Users\\36981\\-hlpf-env-setup>docker compose exec redis redis-cli ping
-
-PONG
-
-
-
-Вправа 3
-
-
-
-C:\\Users\\36981\\-hlpf-env-setup>curl http://localhost:3000
-
-Hello World!
-
-
-
-Вправа 4
-
-
-
-\[6:13:18 PM] Starting compilation in watch mode...
-
-app-1  |
-
-app-1  | \[6:13:22 PM] Found 0 errors. Watching for file changes.
-
-app-1  |
-
-app-1  | \[Nest] 29  - 04/01/2026, 6:13:23 PM     LOG \[NestFactory] Starting Nest application...
-
-app-1  | \[Nest] 29  - 04/01/2026, 6:13:23 PM     LOG \[InstanceLoader] TypeOrmModule dependencies initialized +63ms
-
-app-1  | \[Nest] 29  - 04/01/2026, 6:13:23 PM     LOG \[InstanceLoader] ConfigHostModule dependencies initialized +0ms
-
-app-1  | \[Nest] 29  - 04/01/2026, 6:13:23 PM     LOG \[InstanceLoader] AppModule dependencies initialized +0ms
-
-app-1  | \[Nest] 29  - 04/01/2026, 6:13:23 PM     LOG \[InstanceLoader] ConfigModule dependencies initialized +0ms
-
-app-1  | \[Nest] 29  - 04/01/2026, 6:13:23 PM     LOG \[InstanceLoader] TypeOrmCoreModule dependencies initialized +139ms
-
-app-1  | \[Nest] 29  - 04/01/2026, 6:13:23 PM     LOG \[RoutesResolver] AppController {/}: +4ms
-
-app-1  | \[Nest] 29  - 04/01/2026, 6:13:23 PM     LOG \[RouterExplorer] Mapped {/, GET} route +2ms
-
-app-1  | \[Nest] 29  - 04/01/2026, 6:13:23 PM     LOG \[NestApplication] Nest application successfully started +2ms
-
-
+#### {"message":"Product #999 not found","error":"Not Found","statusCode":404}```
 
 
 
