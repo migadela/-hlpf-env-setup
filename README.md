@@ -4,31 +4,37 @@
 - Name: Зінченко Вікторія Ігорівна
 - Group: 232.1
 
-## Практичне заняття №4 — DTO + class-validator + Pipes
-
+ 
+## Практичне заняття №5 — JWT Authentication + Guards + RBAC
+ 
 ### Структура репозиторію
-=
+```
 .
 ├── src/
-│   ├── categories/
+│   ├── auth/
 │   │   ├── dto/
-│   │   │   ├── create-category.dto.ts
-│   │   │   └── update-category.dto.ts
-│   │   ├── category.entity.ts
-│   │   ├── categories.module.ts
-│   │   ├── categories.service.ts
-│   │   └── categories.controller.ts
-│   ├── products/
-│   │   ├── dto/
-│   │   │   ├── create-product.dto.ts
-│   │   │   └── update-product.dto.ts
-│   │   ├── product.entity.ts
-│   │   ├── products.module.ts
-│   │   ├── products.service.ts
-│   │   └── products.controller.ts
+│   │   │   ├── register.dto.ts
+│   │   │   └── login.dto.ts
+│   │   ├── auth.module.ts
+│   │   ├── auth.service.ts
+│   │   └── auth.controller.ts
+│   ├── users/
+│   │   ├── user.entity.ts
+│   │   ├── users.module.ts
+│   │   └── users.service.ts
 │   ├── common/
+│   │   ├── enums/
+│   │   │   └── role.enum.ts
+│   │   ├── guards/
+│   │   │   ├── jwt-auth.guard.ts
+│   │   │   └── roles.guard.ts
+│   │   ├── decorators/
+│   │   │   ├── current-user.decorator.ts
+│   │   │   └── roles.decorator.ts
 │   │   └── pipes/
-│   │       └── trim.pipe.ts
+│   │   	└── trim.pipe.ts
+│   ├── categories/ ...
+│   ├── products/ ...
 │   ├── migrations/
 │   ├── data-source.ts
 │   ├── main.ts
@@ -36,47 +42,38 @@
 ├── Dockerfile
 ├── docker-compose.yml
 └── README.md
-
-Запуск проекту
-Bash
+```
+ 
+### Запуск проекту
+```bash
 cp .env.example .env
 docker compose up --build
+```
+ 
+### API Endpoints
+| Method | URL | Auth | Role |
+|--------|-----|------|------|
+| POST | /auth/register | - | - |
+| POST | /auth/login | - | - |
+| GET | /api/categories | - | - |
+| POST | /api/categories | JWT | admin |
+| GET | /api/products | - | - |
+| POST | /api/products | JWT | admin |
+| PATCH | /api/products/:id | JWT | admin |
+| DELETE | /api/products/:id | JWT | admin |
+ 
+### Тест реєстрації
 
-Тест валідації — порожнє ім'я категорії
-Запит: curl -X POST http://localhost:3000/api/categories -H "Content-Type: application/json" -d "{\"name\": \"\"}"
-Відповідь:
-
-C:\Users\36981\-hlpf-env-setup>curl -X POST http://localhost:3000/api/categories -H "Content-Type: application/json" -d "{\"name\": \"\"}"
-{"message":["name must be longer than or equal to 2 characters"],"error":"Bad Request","statusCode":400}
-
-
-Тест валідації — від'ємна ціна продукту
-Запит: curl -X POST http://localhost:3000/api/products -H "Content-Type: application/json" -d "{\"name\": \"Test\", \"price\": -5}"
-Відповідь:
-
-C:\Users\36981\-hlpf-env-setup>curl -X POST http://localhost:3000/api/products -H "Content-Type: application/json" -d "{\"name\": \"Test\", \"price\": -5}"
-{"message":["price must not be less than 0.01"],"error":"Bad Request","statusCode":400}
-
-
-Тест валідації — зайве поле
-Запит: curl -X POST http://localhost:3000/api/categories -H "Content-Type: application/json" -d "{\"name\": \"Test\", \"isAdmin\": true}"
-Відповідь:
-
-C:\Users\36981\-hlpf-env-setup>curl -X POST http://localhost:3000/api/categories -H "Content-Type: application/json" -d "{\"name\": \"Test\", \"isAdmin\": true}"
-{"message":["property isAdmin should not exist"],"error":"Bad Request","statusCode":400}
-
-
-Тест TrimPipe
-Запит: curl -X POST http://localhost:3000/api/categories -H "Content-Type: application/json" -d "{\"name\": \"   Trimmed   \"}"
-Відповідь:
-
-JSON
-C:\Users\36981\-hlpf-env-setup>curl -X POST http://localhost:3000/api/categories -H "Content-Type: application/json" -d "{\"name\": \"   Trimmed   \"}"
-{"id":4,"name":"Trimmed","description":null,"createdAt":"2026-04-26T18:45:37.504Z"}
-
-
-Тест валідне створення продукту
-
-
-C:\Users\36981\-hlpf-env-setup>curl -X POST http://localhost:3000/api/products -H "Content-Type: application/json" -d "{\"name\": \"iPhone 16\", \"price\": 999.99, \"stock\": 50, \"categoryId\": 1}"
-{"id":3,"name":"iPhone 16","description":null,"price":999.99,"stock":50,"isActive":true,"category":{"id":1},"createdAt":"2026-04-26T18:40:03.716Z","updatedAt":"2026-04-26T18:40:03.716Z"}
+{"id":1,"email":"admin@test.com","name":"Admin","role":"admin","createdAt":"2026-04-30T19:04:18.527Z"}
+ 
+### Тест логіну
+{"accessToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."}
+ 
+### Тест 401 — запит без токена
+{"message":"Missing authorization token","error":"Unauthorized","statusCode":401}
+ 
+### Тест 403 — запит з роллю user
+{"message":"Insufficient permissions","error":"Forbidden","statusCode":403}
+ 
+### Тест успішного створення від admin
+{"id":4,"name":"MacBook Pro","description":null,"price":2499.99,"stock":0,"isActive":true,"createdAt":"2026-04-30T19:15:46.449Z","updatedAt":"2026-04-30T19:15:46.449Z"}

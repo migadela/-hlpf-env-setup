@@ -1,5 +1,10 @@
+import { AuthModule } from './auth/auth.module';
+import { User } from './users/user.entity';
+import { UsersModule } from './users/users.module';
 import { CategoriesModule } from './categories/categories.module';
 import { ProductsModule } from './products/products.module';
+
+import { CreateUsers1777574341432 } from './migrations/1777574341432-CreateUsers';
 
 import { AddIsActiveToProducts1775672009619 } from './migrations/1775672009619-AddIsActiveToProducts';
 import { Category } from './categories/category.entity';
@@ -23,10 +28,10 @@ import { AppService } from './app.service';
   username: process.env.POSTGRES_USER,
   password: process.env.POSTGRES_PASSWORD,
   database: process.env.POSTGRES_DB,
-  entities: [Category, Product],
+  entities: [Category, Product, User],
   synchronize: false,	// ВИМКНЕНО! Тільки міграції
   migrationsRun: true,   // автоматично запускати міграції при старті
-  migrations: [CreateTables1700000001000, AddIsActiveToProducts1775672009619],
+  migrations: [CreateTables1700000001000, AddIsActiveToProducts1775672009619, CreateUsers1777574341432],
 }),
 
     CacheModule.registerAsync({
@@ -43,8 +48,9 @@ import { AppService } from './app.service';
       inject: [ConfigService],
     }),
 CategoriesModule,
-    ProductsModule,
-
+ProductsModule,
+UsersModule,
+AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

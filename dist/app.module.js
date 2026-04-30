@@ -7,8 +7,12 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
+const auth_module_1 = require("./auth/auth.module");
+const user_entity_1 = require("./users/user.entity");
+const users_module_1 = require("./users/users.module");
 const categories_module_1 = require("./categories/categories.module");
 const products_module_1 = require("./products/products.module");
+const _1777574341432_CreateUsers_1 = require("./migrations/1777574341432-CreateUsers");
 const _1775672009619_AddIsActiveToProducts_1 = require("./migrations/1775672009619-AddIsActiveToProducts");
 const category_entity_1 = require("./categories/category.entity");
 const product_entity_1 = require("./products/product.entity");
@@ -34,10 +38,10 @@ exports.AppModule = AppModule = __decorate([
                 username: process.env.POSTGRES_USER,
                 password: process.env.POSTGRES_PASSWORD,
                 database: process.env.POSTGRES_DB,
-                entities: [category_entity_1.Category, product_entity_1.Product],
+                entities: [category_entity_1.Category, product_entity_1.Product, user_entity_1.User],
                 synchronize: false,
                 migrationsRun: true,
-                migrations: [_1700000001000_CreateTables_1.CreateTables1700000001000, _1775672009619_AddIsActiveToProducts_1.AddIsActiveToProducts1775672009619],
+                migrations: [_1700000001000_CreateTables_1.CreateTables1700000001000, _1775672009619_AddIsActiveToProducts_1.AddIsActiveToProducts1775672009619, _1777574341432_CreateUsers_1.CreateUsers1777574341432],
             }),
             cache_manager_1.CacheModule.registerAsync({
                 isGlobal: true,
@@ -54,6 +58,8 @@ exports.AppModule = AppModule = __decorate([
             }),
             categories_module_1.CategoriesModule,
             products_module_1.ProductsModule,
+            users_module_1.UsersModule,
+            auth_module_1.AuthModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
