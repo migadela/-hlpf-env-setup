@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -7,6 +7,7 @@ import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { Role } from '../common/enums/role.enum';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import { ProductQueryDto } from './dto/product-query.dto';
 
 @ApiTags('Products')
 @Controller('api/products')
@@ -19,8 +20,8 @@ export class ProductsController {
     description: 'Повертає список усіх продуктів з вкладеними категоріями. Публічний ендпоінт.',
   })
   @ApiResponse({ status: 200, description: 'Список продуктів' })
-  findAll() {
-    return this.productsService.findAll();
+  findAll(@Query() query: ProductQueryDto) {
+    return this.productsService.findAll(query);
   }
 
   @Get(':id')
