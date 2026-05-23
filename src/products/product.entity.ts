@@ -8,34 +8,34 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { Category } from '../categories/category.entity';
- 
+
 @Entity('products')
 export class Product {
   @PrimaryGeneratedColumn()
-  id: number;
- 
-  @Column({ type: 'varchar', length: 255 })
-  name: string;
- 
-  @Column({ type: 'text', nullable: true })
-  description: string;
- 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
-  price: number;
- 
-  @Column({ type: 'int', default: 0 })
-  stock: number;
+  id!: number;
 
-@Column({ type: 'boolean', default: true })
-  isActive: boolean;
- 
+  @Column({ type: 'varchar', length: 255 })
+  name!: string;
+
+  @Column({ type: 'text', nullable: true })
+  description!: string;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  price!: number;
+
+  @Column({ type: 'int', default: 0 })
+  stock!: number;
+
+  @Column({ type: 'boolean', default: true })
+  isActive!: boolean;
+
   @ManyToOne(() => Category, { nullable: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'category_id' })
-  category: Category;
- 
+  category!: Category;
+
   @CreateDateColumn()
-  createdAt: Date;
- 
+  createdAt!: Date;
+
   @UpdateDateColumn()
-  updatedAt: Date;
+  updatedAt!: Date;
 }
