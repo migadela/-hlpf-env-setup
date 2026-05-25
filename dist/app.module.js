@@ -24,6 +24,10 @@ const cache_manager_1 = require("@nestjs/cache-manager");
 const cache_manager_redis_yet_1 = require("cache-manager-redis-yet");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
+const order_entity_1 = require("./orders/entities/order.entity");
+const order_item_entity_1 = require("./orders/entities/order-item.entity");
+const _1779696351188_CreateOrders_1 = require("./migrations/1779696351188-CreateOrders");
+const orders_module_1 = require("./orders/orders.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -38,28 +42,30 @@ exports.AppModule = AppModule = __decorate([
                 username: process.env.POSTGRES_USER,
                 password: process.env.POSTGRES_PASSWORD,
                 database: process.env.POSTGRES_DB,
-                entities: [category_entity_1.Category, product_entity_1.Product, user_entity_1.User],
+                entities: [category_entity_1.Category, product_entity_1.Product, user_entity_1.User, order_entity_1.Order, order_item_entity_1.OrderItem],
                 synchronize: false,
                 migrationsRun: true,
-                migrations: [_1700000001000_CreateTables_1.CreateTables1700000001000, _1775672009619_AddIsActiveToProducts_1.AddIsActiveToProducts1775672009619, _1777574341432_CreateUsers_1.CreateUsers1777574341432],
+                migrations: [
+                    _1700000001000_CreateTables_1.CreateTables1700000001000,
+                    _1775672009619_AddIsActiveToProducts_1.AddIsActiveToProducts1775672009619,
+                    _1777574341432_CreateUsers_1.CreateUsers1777574341432,
+                    _1779696351188_CreateOrders_1.CreateOrders1779696351188,
+                ],
             }),
             cache_manager_1.CacheModule.registerAsync({
                 isGlobal: true,
-                imports: [config_1.ConfigModule],
-                useFactory: async (configService) => ({
+                useFactory: async () => ({
                     store: await (0, cache_manager_redis_yet_1.redisStore)({
-                        socket: {
-                            host: configService.get('REDIS_HOST'),
-                            port: parseInt(configService.get('REDIS_PORT'), 10),
-                        },
+                        url: 'redis://redis:6379',
+                        ttl: 300000,
                     }),
                 }),
-                inject: [config_1.ConfigService],
             }),
             categories_module_1.CategoriesModule,
             products_module_1.ProductsModule,
             users_module_1.UsersModule,
             auth_module_1.AuthModule,
+            orders_module_1.OrdersModule,
         ],
         controllers: [app_controller_1.AppController],
         providers: [app_service_1.AppService],
